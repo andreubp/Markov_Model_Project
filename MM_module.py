@@ -1,8 +1,6 @@
 #!/usr/local/bin/python3
 import sys
-
-
-
+import os
 
 def add_50(filename):
     bed_file = open(filename,'r')
@@ -52,9 +50,25 @@ def generate_kmers(k,y=''):
     else:
         for m in ['A','C','T','G']:
             kmer=y+m
-            #yield from get_kmers(k-1,kmer)
-            for item in get_kmers(k-1,kmer):
+            for item in generate_kmers(k-1,kmer):
                 yield item
+
+
+def dictionary_kmers(k):
+    kmer_dict = {}
+    for i in generate_kmers(k):
+        kmer_dict[i]=0
+    print (kmer_dict)
+
+def main(k):
+    (background,signal) = background_signal_separation("exemple.bed")
+    for element in signal:
+        print (element)
+        #if 
+#        for char in element:
+
+
+main(2)
 
 def get_kmers(sequence,k):
     """jhsdj"""
@@ -70,16 +84,10 @@ def get_kmers(sequence,k):
             kmers_list.append(sequence[i:i+k])
         i=i+1
     return kmers_list
+dictionary_kmers(2)
 
 
-
-if __name__ == '__main__':
-	# print(get_kmers(3))
-	# for i in get_kmers(3):
-	# 	print(i)
-    # print(get_kmers('AGTCGATGC',3))
-    #print()
-
+#if __name__ == '__main__':
 
 
 ### For simple iterators, yield from iterable is essentially
