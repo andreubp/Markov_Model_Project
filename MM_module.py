@@ -72,7 +72,7 @@ def main(k):
 #main(2)
 
 def get_kmers(sequence,k):
-    """jhsdj"""
+    """From a sequence extract all the possible k-mers"""
     kmers_list=[]
     length=len(sequence)
     print(length)
