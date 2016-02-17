@@ -5,7 +5,7 @@
 
 git clone https://github.com/...
 
-2. Actualitzar (Fetch) des del repository o de la branca local:
+#2. Actualitzar (Fetch) des del repository o de la branca local:
 
 git pull
 
