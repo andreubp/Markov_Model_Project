@@ -64,11 +64,20 @@ def main(k):
     (background,signal) = background_signal_separation("exemple.bed")
     for element in signal:
         print (element)
-        #if 
+        #if
 #        for char in element:
 
 
-main(2)
+def build_hash(seq_list,k):
+    length=len(seq_list)
+    for i in seq_list:
+        total_length=total_length+len(i)
+        for j in get_kmers(i,k):
+            kmer_dict[j]= kmer_dict[j] + seq_list.count(j)
+    for z in kmer_dict:
+        kmer_dict[z]=kmer_dict[z]/total_length
+
+#main(2)
 
 def get_kmers(sequence,k):
     """jhsdj"""
