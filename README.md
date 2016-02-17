@@ -9,10 +9,6 @@ git commit -m 'Your message'
 git push
 ```
 
-### Save changes of not new file:
-```
-```
-
 
 ### Update your local repository
 
