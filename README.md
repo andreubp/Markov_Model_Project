@@ -3,7 +3,7 @@
 
 1. Crear un clone de la carpeta del github:
 
-git clone https://github.com/andreubp/Project.git
+git clone https://github.com/...
 
 2. Actualitzar (Fetch) des del repository o de la branca local:
 
