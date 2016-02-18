@@ -81,18 +81,19 @@ def get_kmers(sequence,k):
 
 def build_hash(seq_list,k):
     """From a list of sequences it builds a dictionary without pseudocounts"""
-    length=len(seq_list)
     total_length=0
     kmer_dict = {}
     for i in seq_list:
-        total_length=total_length+len(i)
-        for j in get_kmers(i,k):
+        kmers=get_kmers(i,k)
+        for j in kmers:
             if j in kmer_dict: #dictionary_kmers(2) ?!
                 kmer_dict[j]= i.count(j) + kmer_dict[j]
             else:
                 kmer_dict[j]=i.count(j)
     for z in kmer_dict:
-        kmer_dict[z]=kmer_dict[z]/total_length
+        total_length=total_length+kmer_dict[z]
+    for x in kmer_dict:
+        kmer_dict[x]=kmer_dict[x]/total_length
     return kmer_dict
 
 
