@@ -34,7 +34,6 @@ def background_signal_separation(filename):
         signal += (line[10][50:-50],)
     return (background, signal)
 
-
 def generate_kmers(k,y=''):
     """
     This function is a generator of kmers for DNA bases.
@@ -58,38 +57,21 @@ def dictionary_kmers(k):
     kmer_dict = {}
     for i in generate_kmers(k):
         kmer_dict[i]=0
-    print (kmer_dict)
-
-def main(k):
-    (background,signal) = background_signal_separation("exemple.bed")
-    for element in signal:
-        print (element)
-        #if
-#        for char in element:
-
-
-
-#main(2)
+    return (kmer_dict)
 
 def get_kmers(sequence,k):
     """From a sequence extract all the possible k-mers"""
     kmers_list=[]
     length=len(sequence)
-    print(length)
     if k<1 or length < k:
         sys.exit()
     i=0
     while i<length:
-        print(i)
+#        print(i)
         if len(sequence[i:i+k])==k:
             kmers_list.append(sequence[i:i+k])
         i=i+1
     return kmers_list
-dictionary_kmers(2)
-
-
-#if __name__ == '__main__':
-
 
 ### For simple iterators, yield from iterable is essentially
 ### just a shortened form of for item in iterable: yield item:
@@ -97,10 +79,11 @@ dictionary_kmers(2)
 def build_hash(seq_list,k):
     length=len(seq_list)
     total_length=0
+    kmer_dict = {}
     for i in seq_list:
         total_length=total_length+len(i)
         for j in get_kmers(i,k):
-            if j in kmer_dict:
+            if j in kmer_dict: #dictionary_kmers(2) ?!
                 kmer_dict[j]= i.count(j) + kmer_dict[j]
             else:
                 kmer_dict[j]=i.count(j)
@@ -108,7 +91,8 @@ def build_hash(seq_list,k):
         kmer_dict[z]=kmer_dict[z]/total_length
     return kmer_dict
 
+
 if __name__ == '__main__':
-    kmer_dict = {}
-    seqs=['AACTA','CCTAA']
-    print(build_hash(seqs,2))
+    (background, signal) = background_signal_separation("example.bed")
+    print("BACKGROUND KMER_DICT \n",build_hash(background,3))
+    print ("\n\nSIGNAL KMER_DICT \n", build_hash(signal,3))
