@@ -11,6 +11,7 @@ def add_50(filename):
         print (line)
 
 def training_testing_sets_separation(filename, ratio, training_file, testing_file):
+    """It separete the data set in training and testing"""
     bed50_file = open(filename,"r")
     training = open(training_file, 'w')
     testing = open(testing_file, 'w')
@@ -24,11 +25,12 @@ def training_testing_sets_separation(filename, ratio, training_file, testing_fil
 
 
 def background_signal_separation(filename):
+    """It separate from the sequence the background from the signal"""
     bed50_file = open(filename,"r")
     background = ()
     signal =()
     for line in bed50_file:
-        line = line.strip().split("\t")
+        line = line.strip().upper().split("\t")
         background += (line[10][:50],)
         background += (line[10][-50:],)
         signal += (line[10][50:-50],)
@@ -54,13 +56,14 @@ def generate_kmers(k,y=''):
 
 
 def dictionary_kmers(k):
+    """It generates a dictionary for all possible kmers"""
     kmer_dict = {}
     for i in generate_kmers(k):
         kmer_dict[i]=0
     return (kmer_dict)
 
 def get_kmers(sequence,k):
-    """From a sequence extract all the possible k-mers"""
+    """From a sequence extract all the possible k-mers in that sequence"""
     kmers_list=[]
     length=len(sequence)
     if k<1 or length < k:
@@ -77,6 +80,7 @@ def get_kmers(sequence,k):
 ### just a shortened form of for item in iterable: yield item:
 
 def build_hash(seq_list,k):
+    """From a list of sequences it builds a dictionary without pseudocounts"""
     length=len(seq_list)
     total_length=0
     kmer_dict = {}
