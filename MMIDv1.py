@@ -53,28 +53,31 @@ back_dict=m.build_hash(background,3)
 sign_dit=m.build_hash(signal,3)
 
 ######### 4 print ########
-count=0
-out_file_name=open(args.outfile, "w")
-out_file_name.write("This file contains the information of the MM used in MMDI:\n")
-out_file_name.write("\tBackground respect to signal\n")
-out_file_name.write("Background a:\t\tSignal a:\n")
-for i in back_dict:
-    out_file_name.write("{0} = {1:.2f}\t\t".format(i,back_dict[i]))
-    count=count+back_dict[i]
-    if i in sign_dit:
-        out_file_name.write("{0} = {1:.2f}\n".format(i,sign_dit[i]))
-    else:
-        out_file_name.write(i+" = NA\n")
-out_file_name.write("\tThe sum of the at from Background is: {0}\n".format(count))
-count=0
-out_file_name.write("\tSignal respect to background\n")
-out_file_name.write("Signal a:\t\tBackground a:\n")
-for i in sign_dit:
-    out_file_name.write("{0} = {1:.2f}\t\t".format(i,sign_dit[i]))
-    count=count+back_dict[i]
-    if i in back_dict:
-        out_file_name.write("{0} = {1:.2f}\n".format(i,back_dict[i]))
-    else:
-        out_file_name.write(i+" = NA\n")
-out_file_name.write("\tThe sum of the at from Signal is: {0}\n".format(count))
+
+m.print_hash(sign_dit,back_dict,args.outfile)
+
+# count=0
+# out_file_name=open(args.outfile, "w")
+# out_file_name.write("This file contains the information of the MM used in MMDI:\n")
+# out_file_name.write("\tBackground respect to signal\n")
+# out_file_name.write("Background a:\t\tSignal a:\n")
+# for i in back_dict:
+#     out_file_name.write("{0} = {1:.2f}\t\t".format(i,back_dict[i]))
+#     count=count+back_dict[i]
+#     if i in sign_dit:
+#         out_file_name.write("{0} = {1:.2f}\n".format(i,sign_dit[i]))
+#     else:
+#         out_file_name.write(i+" = NA\n")
+# out_file_name.write("\tThe sum of the at from Background is: {0}\n".format(count))
+# count=0
+# out_file_name.write("\tSignal respect to background\n")
+# out_file_name.write("Signal a:\t\tBackground a:\n")
+# for i in sign_dit:
+#     out_file_name.write("{0} = {1:.2f}\t\t".format(i,sign_dit[i]))
+#     count=count+back_dict[i]
+#     if i in back_dict:
+#         out_file_name.write("{0} = {1:.2f}\n".format(i,back_dict[i]))
+#     else:
+#         out_file_name.write(i+" = NA\n")
+# out_file_name.write("\tThe sum of the at from Signal is: {0}\n".format(count))
 sys.exit()

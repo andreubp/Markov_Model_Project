@@ -96,6 +96,33 @@ def build_hash(seq_list,k):
         kmer_dict[x]=kmer_dict[x]/total_length
     return kmer_dict
 
+def print_hash(dict_signal,dict_background,outfilename):
+    """This function prints the MM in a output file"""
+    count=0
+    out_file_name=open(outfilename, "w")
+    out_file_name.write("This file contains the information of the MM used in MMDI:\n")
+    out_file_name.write("\tBackground respect to signal\n")
+    out_file_name.write("Background a:\t\tSignal a:\n")
+    for i in dict_background:
+        out_file_name.write("{0} = {1:.2f}\t\t".format(i,dict_background[i]))
+        count=count+dict_background[i]
+        if i in dict_signal:
+            out_file_name.write("{0} = {1:.2f}\n".format(i,dict_signal[i]))
+        else:
+            out_file_name.write(i+" = NA\n")
+    out_file_name.write("\tThe sum of the at from Background is: {0}\n".format(count))
+    count=0
+    out_file_name.write("\tSignal respect to background\n")
+    out_file_name.write("Signal a:\t\tBackground a:\n")
+    for i in dict_signal:
+        out_file_name.write("{0} = {1:.2f}\t\t".format(i,dict_signal[i]))
+        count=count+dict_background[i]
+        if i in dict_background:
+            out_file_name.write("{0} = {1:.2f}\n".format(i,dict_background[i]))
+        else:
+            out_file_name.write(i+" = NA\n")
+    out_file_name.write("\tThe sum of the at from Signal is: {0}\n".format(count))
+
 
 if __name__ == '__main__':
     (background, signal) = background_signal_separation("example.bed")
