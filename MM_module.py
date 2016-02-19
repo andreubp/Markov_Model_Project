@@ -59,7 +59,7 @@ def dictionary_kmers(k):
     """It generates a dictionary for all possible kmers"""
     kmer_dict = {}
     for i in generate_kmers(k):
-        kmer_dict[i]=0
+        kmer_dict[i]=1
     return (kmer_dict)
 
 def get_kmers(sequence,k):
@@ -96,6 +96,21 @@ def build_hash(seq_list,k):
         kmer_dict[x]=kmer_dict[x]/total_length
     return kmer_dict
 
+def build_hash_pseudocount(seq_list,k):
+    """From a list of sequences it builds a dictionary with pseudocounts"""
+    kmer_dict=dictionary_kmers(k)
+    total_length=4**(k)
+    for i in seq_list:
+        kmers=get_kmers(i,k)
+        for j in kmers:
+            kmer_dict[j]= i.count(j) + kmer_dict[j]
+    for z in kmer_dict:
+        total_length=total_length+kmer_dict[z]-1
+    for x in kmer_dict:
+        kmer_dict[x]=kmer_dict[x]/total_length
+    return kmer_dict
+
+
 def print_hash(dict_signal,dict_background,outfilename):
     """This function prints the MM in a output file"""
     count=0
@@ -104,10 +119,10 @@ def print_hash(dict_signal,dict_background,outfilename):
     out_file_name.write("\tBackground respect to signal\n")
     out_file_name.write("Background a:\t\tSignal a:\n")
     for i in dict_background:
-        out_file_name.write("{0} = {1:.2f}\t\t".format(i,dict_background[i]))
+        out_file_name.write("{0} = {1:.3f}\t\t".format(i,dict_background[i]))
         count=count+dict_background[i]
         if i in dict_signal:
-            out_file_name.write("{0} = {1:.2f}\n".format(i,dict_signal[i]))
+            out_file_name.write("{0} = {1:.3f}\n".format(i,dict_signal[i]))
         else:
             out_file_name.write(i+" = NA\n")
     out_file_name.write("\tThe sum of the at from Background is: {0}\n".format(count))
@@ -115,10 +130,10 @@ def print_hash(dict_signal,dict_background,outfilename):
     out_file_name.write("\tSignal respect to background\n")
     out_file_name.write("Signal a:\t\tBackground a:\n")
     for i in dict_signal:
-        out_file_name.write("{0} = {1:.2f}\t\t".format(i,dict_signal[i]))
+        out_file_name.write("{0} = {1:.3f}\t\t".format(i,dict_signal[i]))
         count=count+dict_background[i]
         if i in dict_background:
-            out_file_name.write("{0} = {1:.2f}\n".format(i,dict_background[i]))
+            out_file_name.write("{0} = {1:.3f}\n".format(i,dict_background[i]))
         else:
             out_file_name.write(i+" = NA\n")
     out_file_name.write("\tThe sum of the at from Signal is: {0}\n".format(count))
