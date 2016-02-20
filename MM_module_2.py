@@ -139,8 +139,8 @@ def print_hash(dict_signal,dict_background,outfilename):
             out_file_name.write(i+" = NA\n")
     out_file_name.write("\tThe sum of the at from Signal is: {0}\n".format(count))
 
-def windows(background_testing, signal_testing, k, l, back_dict, sign_dict):
-    for sentence in background_testing:
+def windows(data, k, l, back_dict, sign_dict):
+    for sentence in data:
         L = len(sentence)
         n = 0
 
@@ -159,9 +159,9 @@ def windows(background_testing, signal_testing, k, l, back_dict, sign_dict):
             while m < (len(windows)-(k-1)):
                 print (n,m)
                 print(windows[m:m+k])
-                total_score += math.log((back_dict[(windows[m:m+k])])/sign_dict[(windows[m:m+k])])
+                total_score += math.log((sign_dict[(windows[m:m+k])])/back_dict[(windows[m:m+k])])
                 m +=1
-            print (total_score)
+            yield (total_score)
             n +=1
     #print (total_score)
 

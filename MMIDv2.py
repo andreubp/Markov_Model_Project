@@ -67,7 +67,7 @@ m.training_testing_sets_separation(args.infile,3,training_filename,testing_filen
 
 ######## 2 +/- ###########
 (background, signal)=m.background_signal_separation(training_filename)
-(background_testing, signal_testing)=m.background_signal_separation(testing_filename)
+(background_testing,signal_testing)=m.background_signal_separation(testing_filename)
 
 ######## 3 kmer dict #####
 if (args.pseudocounts):
@@ -82,6 +82,7 @@ else:
 m.print_hash(sign_dict,back_dict,args.outfile)
 
 ######## 5 windows #######
-print(m.windows(background_testing, signal_testing,args.order,args.wsize, back_dict,sign_dict))
+print(m.windows(background_testing,args.order,args.wsize, back_dict,sign_dict))
+print(m.windows(signal_testing,args.order,args.wsize, back_dict,sign_dict))
 
 sys.exit()
