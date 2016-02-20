@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
 import sys
 import os
+import math
 
 def add_50(filename):
     bed_file = open(filename,'r')
@@ -137,6 +138,33 @@ def print_hash(dict_signal,dict_background,outfilename):
         else:
             out_file_name.write(i+" = NA\n")
     out_file_name.write("\tThe sum of the at from Signal is: {0}\n".format(count))
+
+def windows(background_testing, signal_testing, k, l, back_dict, sign_dict):
+    for sentence in background_testing:
+        L = len(sentence)
+        n = 0
+
+        if (L-l < k):
+            if (l >= L):
+                raise ValueError("The length of the windows: %s chosed is longer thant the sentence of length: %s" %(l,L))
+            else:
+                raise ValueError("The length of the windows: %s in the sentence of length: %s  is too long for the MMorder: %s " %(l,L,k))
+        print ("\n")
+        while (n < L-(l-1)):
+            m=0
+            windows = sentence[n:n+l]
+            print (sentence)
+            print (windows)
+            total_score = 0
+            while m < (len(windows)-(k-1)):
+                print (n,m)
+                print(windows[m:m+k])
+                total_score += math.log((back_dict[(windows[m:m+k])])/sign_dict[(windows[m:m+k])])
+                m +=1
+            print (total_score)
+            n +=1
+    #print (total_score)
+
 
 
 if __name__ == '__main__':

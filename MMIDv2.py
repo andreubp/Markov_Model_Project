@@ -20,7 +20,7 @@
 ########################
 import sys
 import os
-import MM_module as m
+import MM_module_2 as m
 import argparse
 
 
@@ -51,6 +51,13 @@ parser.add_argument('-p','--pseudocounts', dest='pseudocounts',
 parser.add_argument('-k','--order',dest='order',action='store',type=int,
                     default=3,
                     help='It sets the order of the Markov Model used.')
+
+##############
+parser.add_argument('-l','--windows',dest='wsize',action='store',type=int,
+                    default=None,
+                    help='It sets the windows size to analize the testing set.')
+##############
+
 args = parser.parse_args()
 
 ######## 1 TT SETS ######
@@ -60,17 +67,21 @@ m.training_testing_sets_separation(args.infile,3,training_filename,testing_filen
 
 ######## 2 +/- ###########
 (background, signal)=m.background_signal_separation(training_filename)
+(background_testing, signal_testing)=m.background_signal_separation(testing_filename)
 
 ######## 3 kmer dict #####
 if (args.pseudocounts):
     back_dict=m.build_hash_pseudocount(background,args.order)
-    sign_dit=m.build_hash_pseudocount(signal,args.order)
+    sign_dict=m.build_hash_pseudocount(signal,args.order)
 else:
     back_dict=m.build_hash(background,args.order)
-    sign_dit=m.build_hash(signal,args.order)
+    sign_dict=m.build_hash(signal,args.order)
 
 ######### 4 print ########
 
-m.print_hash(sign_dit,back_dict,args.outfile)
+m.print_hash(sign_dict,back_dict,args.outfile)
+
+######## 5 windows #######
+print(m.windows(background_testing, signal_testing,args.order,args.wsize, back_dict,sign_dict))
 
 sys.exit()
