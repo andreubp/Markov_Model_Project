@@ -111,7 +111,7 @@ def build_hash_pseudocount(seq_list,k):
     for x in generate_kmers(k-1):
         total_length=0
         for y in ['A','C','G','T']:
-            total_length=total_length+kmer_dict[x+y]
+            total_length=total_length + kmer_dict[x+y]
         for y in ['A','C','G','T']:
             kmer_dict[x+y]=kmer_dict[x+y]/total_length
     return kmer_dict
@@ -130,7 +130,7 @@ def print_hash(dict_signal,dict_background,outfilename):
     for j in generate_kmers(order-1):
         out_file_name.write("{}\t".format(j))
         for u in  ['A','C','G','T']:
-            if j+u in dict_signal:
+            if j+u in dict_background:
                 out_file_name.write("{:.3f}\t".format(dict_background[j+u]))
             else:
                 out_file_name.write("NA\t")
@@ -146,6 +146,4 @@ def print_hash(dict_signal,dict_background,outfilename):
                 out_file_name.write("NA\t")
         out_file_name.write("\n")
 if __name__ == '__main__':
-    (background, signal) = background_signal_separation("example.bed")
-    print("BACKGROUND KMER_DICT \n",build_hash(background,3))
-    print ("\n\nSIGNAL KMER_DICT \n", build_hash(signal,3))
+    print("hello")
