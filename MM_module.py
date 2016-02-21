@@ -1,6 +1,10 @@
 #!/usr/local/bin/python3
 import sys
 import os
+import math
+
+
+
 
 def add_50(filename):
     bed_file = open(filename,'r')
@@ -58,9 +62,11 @@ def generate_kmers(k,y=''):
 def dictionary_kmers(k):
     """It generates a dictionary for all possible kmers"""
     kmer_dict = {}
+    sys.stderr.write("Gnerating all possible kmers\n")
     for i in generate_kmers(k):
         kmer_dict[i]=1
-    return (kmer_dict)
+    sys.stderr.write("returning that initial dictionary\n")
+    return kmer_dict
 
 def get_kmers(sequence,k):
     """From a sequence extract all the possible k-mers in that sequence"""
@@ -70,7 +76,6 @@ def get_kmers(sequence,k):
         sys.exit()
     i=0
     while i<length:
-#        print(i)
         if len(sequence[i:i+k])==k:
             yield sequence[i:i+k]
         i=i+1
@@ -104,16 +109,20 @@ def build_hash(seq_list,k):
 
 def build_hash_pseudocount(seq_list,k):
     """From a list of sequences it builds a dictionary with pseudocounts"""
+    sys.stderr.write("Getting the inicial kmer dictionary\n")
     kmer_dict=dictionary_kmers(k)
+    sys.stderr.write("Starting the count..\n")
     for i in seq_list:
         for j in get_kmers(i,k):
             kmer_dict[j]= i.count(j) + kmer_dict[j]
+    sys.stderr.write("Counting kmers\n")
     for x in generate_kmers(k-1):
         total_length=0
         for y in ['A','C','G','T']:
             total_length=total_length + kmer_dict[x+y]
         for y in ['A','C','G','T']:
             kmer_dict[x+y]=kmer_dict[x+y]/total_length
+    sys.stderr.write("Returning the dict\n")
     return kmer_dict
 
 
@@ -145,5 +154,28 @@ def print_hash(dict_signal,dict_background,outfilename):
             else:
                 out_file_name.write("NA\t")
         out_file_name.write("\n")
+
+def windows_score(data, k, l, back_dict, sign_dict):
+    for sentence in data:
+        L = len(sentence)
+        n = 0
+        if (L-l < k):
+            if (l >= L):
+                #raise ValueError("The length of the windows: %s chosed is longer thant the sentence of length: %s" %(l,L))
+                next
+            else:
+                #raise ValueError("The length of the windows: %s in the sentence of length: %s  is too long for the MMorder: %s " %(l,L,k))
+                next
+        while (n < L-(l-1)):
+            m=0
+            windows = sentence[n:n+l]
+            total_score = 0
+            while m < (len(windows)-(k-1)):
+                total_score += math.log((sign_dict[(windows[m:m+k])])/back_dict[(windows[m:m+k])])
+                m +=1
+            yield (total_score)
+            n +=1
+    #print (total_score)
+
 if __name__ == '__main__':
     print("hello")
