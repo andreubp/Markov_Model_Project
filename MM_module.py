@@ -26,19 +26,31 @@ def training_testing_sets_separation(filename, ratio, training_file, testing_fil
             testing.write(line)
         else:
             training.write(line)
+    bed50_file.close()
+    training.close()
+    testing.close()
 
 
-def background_signal_separation(filename):
+def background_separation(filename):
     """It separate from the sequence the background from the signal"""
     bed50_file = open(filename,"r")
-    background = ()
-    signal =()
     for line in bed50_file:
         line = line.strip().upper().split("\t")
-        background += (line[10][:50],)
-        background += (line[10][-50:],)
-        signal += (line[10][50:-50],)
-    return (background, signal)
+        yield line[10][:50]
+        yield line[10][-50:]
+    bed50_file.close()
+
+
+def signal_separation(filename):
+    """It separate from the sequence the background from the signal"""
+    bed50_file = open(filename,"r")
+    for line in bed50_file:
+        line = line.strip().upper().split("\t")
+        yield line[10][50:-50]
+    bed50_file.close()
+
+
+
 
 def generate_kmers(k,y=''):
     """
@@ -72,8 +84,6 @@ def get_kmers(sequence,k):
     """From a sequence extract all the possible k-mers in that sequence"""
     kmers_list=[]
     length=len(sequence)
-    if k<1 or length < k:
-        sys.exit()
     i=0
     while i<length:
         if len(sequence[i:i+k])==k:
@@ -109,20 +119,22 @@ def build_hash(seq_list,k):
 
 def build_hash_pseudocount(seq_list,k):
     """From a list of sequences it builds a dictionary with pseudocounts"""
-    sys.stderr.write("Getting the inicial kmer dictionary\n")
+    length=len(seq_list)
+    sys.stderr.write("Building hash from {}\n".format(length))
+    sys.stderr.write("Dict 1\n")
     kmer_dict=dictionary_kmers(k)
-    sys.stderr.write("Starting the count..\n")
+    sys.stderr.write("Dict 2\n")
     for i in seq_list:
         for j in get_kmers(i,k):
-            kmer_dict[j]= i.count(j) + kmer_dict[j]
-    sys.stderr.write("Counting kmers\n")
+            kmer_dict[j]= 1 + kmer_dict[j]
+    sys.stderr.write("Dict 3\n")
     for x in generate_kmers(k-1):
         total_length=0
         for y in ['A','C','G','T']:
             total_length=total_length + kmer_dict[x+y]
         for y in ['A','C','G','T']:
             kmer_dict[x+y]=kmer_dict[x+y]/total_length
-    sys.stderr.write("Returning the dict\n")
+    sys.stderr.write("Dict 4\n")
     return kmer_dict
 
 

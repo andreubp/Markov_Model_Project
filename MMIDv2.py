@@ -74,18 +74,20 @@ sys.stderr.write("Starting the training and testing separation...\n\n")
 m.training_testing_sets_separation(args.infile,3,training_filename,testing_filename)
 
 ######## 2 +/- ###########
-sys.stderr.write("Starting the background and foreground separation...\n\n")
-(background, signal)=m.background_signal_separation(training_filename)
-(background_testing,signal_testing)=m.background_signal_separation(testing_filename)
+
 
 ######## 3 kmer dict #####
-sys.stderr.write("Generating the Markov Model...\n\n")
+
+
 if (args.pseudocounts):
-    back_dict=m.build_hash_pseudocount(background,args.order)
-    sign_dict=m.build_hash_pseudocount(signal,args.order)
+    sys.stderr.write("Starting the training background and foreground separation...\n\n")
+    back_dict=m.build_hash_pseudocount([x for x in m.background_separation(training_filename)],args.order)
+    sys.stderr.write("The MM for the bg is generated...\n\n")
+    sign_dict=m.build_hash_pseudocount([x for x in m.signal_separation(training_filename)],args.order)
+    sys.stderr.write("The MM for the bg is generated...\n\n")
 else:
-    back_dict=m.build_hash(background,args.order)
-    sign_dict=m.build_hash(signal,args.order)
+    back_dict=m.build_hash([x for x in m.background_separation(training_filename)],args.order)
+    sign_dict=m.build_hash([x for x in m.signal_separation(training_filename)],args.order)
 
 ######### 4 print ########
 output_filename=args.outfile+'.MM'
@@ -93,14 +95,16 @@ sys.stderr.write("Printing the model in {}...\n\n".format(output_filename))
 m.print_hash(sign_dict,back_dict,output_filename)
 
 ######## 5 windows #######
+sys.stderr.write("Starting the testing background and foreground separation...\n\n")
+
 sys.stderr.write("Starting the computation of the Scores...\n\n")
 output_filename_fg=args.outfile+'_fg.th'
 output_filename_bg=args.outfile+'_bg.th'
 out_fg=open(output_filename_fg, "w")
 out_bg=open(output_filename_bg, "w")
 sys.stderr.write("Printing the background scores at {}...\n\n".format(output_filename_bg))
-for i in m.windows_score(background_testing,args.order,args.wsize, back_dict,sign_dict):
+for i in m.windows_score([x for x in m.background_separation(testing_filename)],args.order,args.wsize, back_dict,sign_dict):
     out_bg.write("{}\n".format(i))
 sys.stderr.write("Printing the foreground scores at {}...\n\n".format(output_filename_fg))
-for i in m.windows_score(signal_testing,args.order,args.wsize, back_dict,sign_dict):
+for i in m.windows_score([x for x in m.signal_separation(testing_filename)],args.order,args.wsize, back_dict,sign_dict):
     out_fg.write("{}\n".format(i))
