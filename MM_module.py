@@ -3,9 +3,6 @@ import sys
 import os
 import math
 
-
-
-
 def add_50(filename):
     bed_file = open(filename,'r')
     for line in bed_file:

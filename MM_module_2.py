@@ -63,6 +63,8 @@ def dictionary_kmers(k):
         kmer_dict[i]=1
     return (kmer_dict)
 
+
+#######
 def get_kmers(sequence,k):
     """From a sequence extract all the possible k-mers in that sequence"""
     kmers_list=[]
