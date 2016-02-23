@@ -182,7 +182,10 @@ def windows_score(data, k, l, back_dict, sign_dict):
                 top_windows = total_score
 
             n +=1
-        yield (top_windows)
+        if top_windows is None:
+            pass
+        else:
+            yield top_windows
 
 if __name__ == '__main__':
     print("hello")
