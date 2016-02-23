@@ -100,11 +100,20 @@ sys.stderr.write("Starting the testing background and foreground separation...\n
 sys.stderr.write("Starting the computation of the Scores...\n\n")
 output_filename_fg=args.outfile+'_fg.th'
 output_filename_bg=args.outfile+'_bg.th'
+output_filename_all_top = args.outfile+'_all_top.th'
+output_filename_all_bot = args.outfile+'_all_bot.th'
 out_fg=open(output_filename_fg, "w")
 out_bg=open(output_filename_bg, "w")
+output_all_top=open(output_filename_all_top, "w")
+output_all_bot=open(output_filename_all_bot, "w")
+
 sys.stderr.write("Printing the background scores at {}...\n\n".format(output_filename_bg))
 for i in m.windows_score([x for x in m.background_separation(testing_filename)],args.order,args.wsize, back_dict,sign_dict):
     out_bg.write("{}\n".format(i))
 sys.stderr.write("Printing the foreground scores at {}...\n\n".format(output_filename_fg))
 for i in m.windows_score([x for x in m.signal_separation(testing_filename)],args.order,args.wsize, back_dict,sign_dict):
     out_fg.write("{}\n".format(i))
+#sys.stderr.write("Printing the entire scores at {}...\n\n".format(output_filename_bg))
+
+#for i in m.windows_score([x for x in m.none_separation(testing_filename)], args.order, args.wsize, back_dict, sign_dict):
+#    output_all_top.write("{}\n".format(i))

@@ -46,7 +46,13 @@ def signal_separation(filename):
         yield line[10][50:-50]
     bed50_file.close()
 
-
+def none_separation(filename):
+    """It separate from the sequence the background from the signal"""
+    bed50_file = open(filename,"r")
+    for line in bed50_file:
+        line = line.strip().upper().split("\t")
+        yield line[10]
+    bed50_file.close()
 
 
 def generate_kmers(k,y=''):
@@ -94,46 +100,32 @@ def get_kmers(sequence,k):
 def build_hash(seq_list,k):
     """From a list of sequences it builds a dictionary without pseudocounts"""
     kmer_dict = {}
+    total_length=0
     for i in seq_list:
         for j in get_kmers(i,k):
-            if j in kmer_dict: #dictionary_kmers(2) ?!
-                kmer_dict[j]= i.count(j) + kmer_dict[j]
+            total_length=total_length + 1
+            if j in kmer_dict:
+                kmer_dict[j]= 1 + kmer_dict[j]
             else:
-                kmer_dict[j]=i.count(j)
-    for x in generate_kmers(k-1):
-        total_length=0
-        for y in ['A','C','G','T']:
-            if x+y in kmer_dict:
-                total_length=total_length+kmer_dict[x+y]
-            else:
-                pass
-        for y in ['A','C','G','T']:
-            if x+y in kmer_dict:
-                kmer_dict[x+y]=kmer_dict[x+y]/total_length
-            else:
-                pass
+                kmer_dict[j]= 1
+    for x in kmer_dict:
+        kmer_dict[x]=kmer_dict[x]/total_length
     return kmer_dict
 
 def build_hash_pseudocount(seq_list,k):
     """From a list of sequences it builds a dictionary with pseudocounts"""
     length=len(seq_list)
     sys.stderr.write("Building hash from {}\n".format(length))
-    sys.stderr.write("Dict 1\n")
     kmer_dict=dictionary_kmers(k)
-    sys.stderr.write("Dict 2\n")
+
+    total_length=0
     for i in seq_list:
         for j in get_kmers(i,k):
             kmer_dict[j]= 1 + kmer_dict[j]
-    sys.stderr.write("Dict 3\n")
-    for x in generate_kmers(k-1):
-        total_length=0
-        for y in ['A','C','G','T']:
-            total_length=total_length + kmer_dict[x+y]
-        for y in ['A','C','G','T']:
-            kmer_dict[x+y]=kmer_dict[x+y]/total_length
-    sys.stderr.write("Dict 4\n")
+            total_length=total_length + 1
+    for x in kmer_dict:
+        kmer_dict[x]=kmer_dict[x]/total_length
     return kmer_dict
-
 
 def print_hash(dict_signal,dict_background,outfilename):
     """This function prints the MM in a output file"""
@@ -175,6 +167,8 @@ def windows_score(data, k, l, back_dict, sign_dict):
             else:
                 #raise ValueError("The length of the windows: %s in the sentence of length: %s  is too long for the MMorder: %s " %(l,L,k))
                 next
+        top_windows = None
+        bot_windows = None
         while (n < L-(l-1)):
             m=0
             windows = sentence[n:n+l]
@@ -182,9 +176,13 @@ def windows_score(data, k, l, back_dict, sign_dict):
             while m < (len(windows)-(k-1)):
                 total_score += math.log((sign_dict[(windows[m:m+k])])/back_dict[(windows[m:m+k])])
                 m +=1
-            yield (total_score)
+            if top_windows is None:
+                top_windows = total_score
+            elif top_windows < total_score:
+                top_windows = total_score
+
             n +=1
-    #print (total_score)
+        yield (top_windows)
 
 if __name__ == '__main__':
     print("hello")
