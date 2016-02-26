@@ -186,7 +186,13 @@ def windows_score(data, k, l, back_dict, sign_dict):
 
 def identifier(t,sequence,l,k,back_dict,sign_dict):
     L = len(sequence)
+    x=50
+    y=L-50
     n = 0
+    TP=0
+    FP=0
+    TN=0
+    FN=0
     if (L-l < k):
         if (l >= L):
             #raise ValueError("The length of the windows: %s chosed is longer thant the sentence of length: %s" %(l,L))
@@ -201,23 +207,19 @@ def identifier(t,sequence,l,k,back_dict,sign_dict):
         while m < (len(windows)-(k-1)):
             total_score += math.log((sign_dict[(windows[m:m+k])])/back_dict[(windows[m:m+k])])
             m +=1
-        if total_score > t:
-            yield (n,n+l,L)
-        n +=1
-
-def selector(pos):
-    total=pos[2]
-    x=50
-    y=total-50
-    TP=FP=0
-    for i in range(pos[0],pos[1]):
-        if i >= x and i <= y:
-            TP=TP+1
+        if total_score >= t:
+            for i in range(n,n+l):
+                if i >= x and i <= y:
+                    TP=TP+1
+                else:
+                    FP=FP+1
         else:
-            FP=FP+1
-    FN=(y-x)-TP
-    TN=total-(y-x)-FP
-
+            for i in range(n,n+l):
+                if i < x or i > y:
+                    TN=TN+1
+                else:
+                    FN=FN+1
+        n +=1
     yield (TP,FP,TN,FN)
 
 
