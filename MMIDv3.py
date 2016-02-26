@@ -104,11 +104,11 @@ sys.stderr.write("Starting the testing background and foreground separation...\n
 # sys.stderr.write("Starting the computation of the Scores...\n\n")
 # output_filename_fg=args.outfile+'_fg.th'
 # output_filename_bg=args.outfile+'_bg.th'
-# output_filename_all_top = args.outfile+'_all_top.th'
+output_filename= args.outfile+'.data'
 # output_filename_all_bot = args.outfile+'_all_bot.th'
 # out_fg=open(output_filename_fg, "w")
 # out_bg=open(output_filename_bg, "w")
-# output_all_top=open(output_filename_all_top, "w")
+output=open(output_filename, "w")
 # output_all_bot=open(output_filename_all_bot, "w")
 
 # sys.stderr.write("Printing the background scores at {}...\n\n".format(output_filename_bg))
@@ -117,23 +117,25 @@ sys.stderr.write("Starting the testing background and foreground separation...\n
 # sys.stderr.write("Printing the foreground scores at {}...\n\n".format(output_filename_fg))
 # for i in m.windows_score([x for x in m.signal_separation(testing_filename)],args.order,args.wsize, back_dict,sign_dict):
 #     out_fg.write("{}\n".format(i))
-#sys.stderr.write("Printing the entire scores at {}...\n\n".format(output_filename_bg))
-
-for i in range(-20,40,4):
+#sys.stderr.write("Printing the entire scores at {}...\n\n".format(output_filename_bg)
+list_t=[-40]+[x for x in range(-10,10,1)]+[40]
+for i in list_t:
     TPR=0
     FPR=0
     PPV=0
-    TP=FP=TN=FN=0
+    TP=0
+    FP=0
+    TN=0
+    FN=0
     for x in  m.none_separation(testing_filename):
         for y in m.identifier(i,x,args.wsize,args.order,back_dict,sign_dict):
-            for tup in m.selector(y):
-                TP+=tup[0]
-                FP+=tup[1]
-                TN+=tup[2]
-                FN+=tup[3]
+            TP+=y[0]
+            FP+=y[1]
+            TN+=y[2]
+            FN+=y[3]
     TPR=TP/(TP+FN)
     FPR=FP/(FP+TN)
     PPV=TP/(TP+FP)
-    print("{0}\t{1}\t{2}\t{3}\n".format(i,TPR,FPR,PPV))
+    output.write("{0}\t{1}\t{2}\t{3}\n".format(i,TPR,FPR,PPV))
 #for i in m.windows_score([x for x in m.none_separation(testing_filename)], args.order, args.wsize, back_dict, sign_dict):
 #    output_all_top.write("{}\n".format(i))
