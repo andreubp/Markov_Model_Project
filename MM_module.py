@@ -1,4 +1,5 @@
 #!/usr/local/bin/python3
+"""This is the documentation for MM_module"""
 import sys
 import os
 import math
@@ -93,10 +94,6 @@ def get_kmers(sequence,k):
             yield sequence[i:i+k]
         i=i+1
 
-
-### For simple iterators, yield from iterable is essentially
-### just a shortened form of for item in iterable: yield item:
-
 def build_hash(seq_list,k):
     """From a list of sequences it builds a dictionary without pseudocounts"""
     kmer_dict = {}
@@ -186,6 +183,45 @@ def windows_score(data, k, l, back_dict, sign_dict):
             pass
         else:
             yield top_windows
+
+def identifier(t,sequence,l,k,back_dict,sign_dict):
+    L = len(sequence)
+    n = 0
+    if (L-l < k):
+        if (l >= L):
+            #raise ValueError("The length of the windows: %s chosed is longer thant the sentence of length: %s" %(l,L))
+            next
+        else:
+            #raise ValueError("The length of the windows: %s in the sentence of length: %s  is too long for the MMorder: %s " %(l,L,k))
+            next
+    while (n < L-(l-1)):
+        m=0
+        windows = sequence[n:n+l]
+        total_score = 0
+        while m < (len(windows)-(k-1)):
+            total_score += math.log((sign_dict[(windows[m:m+k])])/back_dict[(windows[m:m+k])])
+            m +=1
+        if total_score > t:
+            yield (n,n+l,L)
+        n +=1
+
+def selector(pos):
+    total=pos[2]
+    x=50
+    y=total-50
+    TP=FP=0
+    for i in range(pos[0],pos[1]):
+        if i >= x and i <= y:
+            TP=TP+1
+        else:
+            FP=FP+1
+    FN=(y-x)-TP
+    TN=total-(y-x)-FP
+
+    yield (TP,FP,TN,FN)
+
+
+
 
 if __name__ == '__main__':
     print("hello")
