@@ -7,6 +7,18 @@ python instalation.
 This modeule only cotain documented functions used in the main script.
 The authors of this module are Andreu Bofill and David Mas.
 """
+
+                        ########################
+                        #        Authors:      #
+                        #     Andreu Bofill    #
+                        #       David Mas      #
+                        ########################
+
+
+########################
+#        Modules       #
+########################
+
 import sys
 import os
 import math
